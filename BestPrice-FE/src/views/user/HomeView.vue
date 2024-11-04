@@ -4,11 +4,173 @@
   <section>
     <div class="container-lg">
       <div class="row">
+        <span
+          class="p-0 fs-3 fst-normal"
+          style="color: #207bc1; font-weight: 700; margin: 12px 0"
+        >
+          Sản phẩm gợi ý hôm nay
+        </span>
         <div class="col-md-12">
           <div class="row row-cols-1 row-cols-md-5">
             <!-- cart product -->
             <div
-              v-for="product in products"
+              v-for="product in products.items"
+              :key="product.id"
+              class="col border border-1"
+              style="overflow: hidden"
+            >
+              <div class="product-item">
+                <figure class="figure-wrapper mb-0">
+                  <a href="index.html" title="Product Title">
+                    <img
+                      :src="product.imageUrl"
+                      alt="Product Thumbnail"
+                      class="tab-image img-fluid"
+                      style="height: 200px; width: 200px; object-fit: fill"
+                    />
+                  </a>
+                </figure>
+
+                <div class="button-area my-1 d-flex justify-content-center">
+                  <router-link
+                    :to="{
+                      name: 'productprice',
+                      params: { id: product.id },
+                    }"
+                    class="nav-link link-dark px-2 mx-3 fs-0_2"
+                    style="color: white"
+                    aria-current="page"
+                    @click="
+                      viewProductPrice(
+                        product.id,
+                        product.name,
+                        product.imageUrl
+                      )
+                    "
+                  >
+                    <button
+                      class="btn btn-danger rounded-pill text-center align-items-center d-flex"
+                      style="height: 26px; font-size: 14px"
+                    >
+                      Tới nơi bán
+                    </button>
+                  </router-link>
+                </div>
+                <div class="d-flex flex-column text-center">
+                  <div class="titleProduct d-flex justify-content-center">
+                    <span
+                      id="mySpan"
+                      class="titlename text-start m-0 fs-6 text-capitalize"
+                      style="font-style: normal"
+                    >
+                      {{ product.name }}
+                    </span>
+                  </div>
+
+                  <div
+                    class="priceitem text-start mt-1 d-flex justify-content-center"
+                  >
+                    <span class="text-danger my-0">Giá từ 17.500.000 đ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- cart product -->
+          </div>
+          <!-- / product-grid -->
+        </div>
+        <nav aria-label="Page navigation" style="bottom: 0">
+          <ul
+            class="pagination d-flex align-items-center justify-content-center p-3 m-0"
+          >
+            <li class="page-item" :class="{ disabled: pageNumber === 1 }">
+              <a
+                class="page-link"
+                href="#"
+                aria-label="Previous"
+                @click.prevent="changePage(pageNumber - 1)"
+              >
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li
+              v-for="page in visiblePages"
+              :key="page"
+              class="page-item"
+              :class="{ active: page === pageNumber }"
+            >
+              <a class="page-link" href="#" @click.prevent="changePage(page)">{{
+                page
+              }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: products.length == 0 }">
+              <a
+                class="page-link"
+                href="#"
+                aria-label="Next"
+                @click.prevent="changePage(pageNumber + 1)"
+              >
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- danh muc san pham -->
+      <div class="row mb-5">
+        <span
+          class="p-0 fs-3 fst-normal"
+          style="color: #207bc1; font-weight: 700; margin: 12px 0"
+        >
+          Category
+        </span>
+        <div class="col-md-12">
+          <div class="row row-cols-1 row-cols-md-5">
+            <!-- Category Items -->
+            <div class="category-item">
+              <a href="">
+                <img
+                  src="https://asset.websosanh.vn/dist/23a87860d12ab078ca3f.png"
+                  alt="Fruits & Veges"
+                />
+              </a>
+              <div class="category-name fs-6">Điện thoại</div>
+            </div>
+
+            <!-- Category Items -->
+            <div class="category-item">
+              <a href="">
+                <img
+                  src="https://asset.websosanh.vn/dist/49f0b34bf25477cc5b26.png"
+                  alt="Fruits & Veges"
+                />
+              </a>
+              <div class="category-name fs-6">Laptop</div>
+            </div>
+            <!-- Category Items -->
+            <!-- Category Items -->
+          </div>
+          <!-- / product-grid -->
+        </div>
+      </div>
+      <!-- danh muc san pham -->
+
+      <!-- san pham gan day -->
+      <div class="row mb-5">
+        <span
+          class="p-0 fs-3 fst-normal"
+          style="color: #207bc1; font-weight: 700; margin: 12px 0"
+        >
+          Sản phẩm bạn vừa xem
+        </span>
+        <div class="col-md-12">
+          <div class="row row-cols-1 row-cols-md-5">
+            <!-- cart product -->
+            <div
+              v-for="product in productsRecenly"
               :key="product.id"
               class="col border border-1"
               style="overflow: hidden"
@@ -74,47 +236,9 @@
           <!-- / product-grid -->
         </div>
       </div>
+      <!-- san pham gan day -->
     </div>
   </section>
-
-  <nav aria-label="Page navigation" style="bottom: 0">
-    <ul
-      class="pagination d-flex align-items-center justify-content-center p-3 m-0"
-    >
-      <li class="page-item" :class="{ disabled: pageNumber === 1 }">
-        <a
-          class="page-link"
-          href="#"
-          aria-label="Previous"
-          @click.prevent="changePage(pageNumber - 1)"
-        >
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">Previous</span>
-        </a>
-      </li>
-      <li
-        v-for="page in visiblePages"
-        :key="page"
-        class="page-item"
-        :class="{ active: page === pageNumber }"
-      >
-        <a class="page-link" href="#" @click.prevent="changePage(page)">{{
-          page
-        }}</a>
-      </li>
-      <li class="page-item" :class="{ disabled: products.length == 0 }">
-        <a
-          class="page-link"
-          href="#"
-          aria-label="Next"
-          @click.prevent="changePage(pageNumber + 1)"
-        >
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Next</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
 </template>
 
 <script>
@@ -130,14 +254,16 @@ export default {
       products: [],
       pageNumber: 1,
       search: "",
+      productsRecenly: [],
     };
   },
   mounted() {
     this.fetchProducts();
+    this.productsRecenly = JSON.parse(localStorage.getItem("items"));
   },
   computed: {
     visiblePages() {
-      if (this.products.length == 0) return
+      if (this.products.length == 0) return;
       const pages = [];
       const startPage = Math.max(1, this.pageNumber - 1);
       const endPage = this.pageNumber + 1;
@@ -228,5 +354,24 @@ export default {
 }
 .nav-link:hover {
   color: red !important;
+}
+.cateName {
+  color: #287cc4;
+  font-weight: 700;
+}
+
+.category-item {
+  text-align: center;
+}
+.category-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.category-name {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #333;
 }
 </style>

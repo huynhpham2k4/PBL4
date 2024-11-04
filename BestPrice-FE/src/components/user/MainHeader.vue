@@ -3,16 +3,28 @@
   <header class="p-1">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-between">
-
         <h1 class="logo-wbside">BestPrice</h1>
 
-        <div>
-          <input
-            class="form-control form-control-dark rounded-pill"
-            placeholder="Search..."
-            aria-label="Search"
-            style="height: 40px; width: 600px; font-size: 14px"
-          />
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="position-relative" style="width: 600px">
+            <input
+              class="form-control form-control-dark rounded-pill pr-5"
+              placeholder="Search..."
+              aria-label="Search"
+              style="height: 40px; font-size: 14px; padding-right: 40px"
+              v-model="searchQuery"
+              @keyup.enter="submitSearch"
+            />
+            <i
+              class="bi bi-search position-absolute"
+              style="
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #aaa;
+              "
+            ></i>
+          </div>
         </div>
 
         <div class="">
@@ -31,7 +43,9 @@
   <!-- header -->
 
   <!-- navbar view -->
-  <div class="container-fluid bg-light border-bottom d-flex flex-wrap justify-content-center align-items-center container-nav">
+  <div
+    class="container-fluid bg-light border-bottom d-flex flex-wrap justify-content-center align-items-center container-nav"
+  >
     <nav
       class="container d-flex flex-wrap justify-content-center align-items-center"
     >
@@ -85,7 +99,8 @@ export default {
   components: {},
   data() {
     return {
-      categories: [], // Dữ liệu sản phẩm sẽ được lấy từ API hoặc static data
+      categories: [], //Dữ liệu sản phẩm sẽ được lấy từ API hoặc static data
+      searchQuery: "",
     };
   },
   mounted() {
@@ -97,6 +112,17 @@ export default {
       const response = await fetch("https://localhost:7108/api/Category");
       const data = await response.json();
       this.categories = data;
+    },
+    submitSearch() {
+      if (this.searchQuery) {
+        // Navigate to the search results page with the search query
+        console.log("test true");
+        this.$router.push({
+          name: "product", // name route
+          params: { id: 0 },
+          query: { search: this.searchQuery },
+        });
+      }
     },
   },
 };
@@ -298,7 +324,7 @@ export default {
     text-align: left;
   }
 }
-.logo-wbside{
+.logo-wbside {
   color: white;
 }
 header {

@@ -31,24 +31,24 @@ namespace Web_API_PBL.Controllers
 			return await _context.ProductPrices.ToListAsync();
 		}
 
-		// GET: api/ProductPrice/5
 		[HttpGet("{productId}")]
-		public async Task<IEnumerable<ProductPrice>> GetProductPrice(int productId)
+		public async Task<IEnumerable<object>> GetProductPrice(int productId)
 		{
-			if (_context.ProductPrices == null)
+			if (_context.ProductPrices == null)	
 			{
-				return Enumerable.Empty<ProductPrice>();
+				return Enumerable.Empty<object>();
 			}
 
 			var productPrices = await _context.ProductPrices
-			.Where(pp => pp.ProductId == productId)
-			.ToListAsync();
-
-
-			if (productPrices == null)
-			{
-				return Enumerable.Empty<ProductPrice>();
-			}
+				.Where(pp => pp.ProductId == productId).Include(pp=> pp.Website)
+				.Select(pp => new
+				{
+					pp.Id,
+					pp.Price,
+					pp.Url,
+					urlLogo = pp.Website.UrlLogo // Giả sử Website có thuộc tính Name
+				})
+				.ToListAsync();
 
 			return productPrices;
 		}

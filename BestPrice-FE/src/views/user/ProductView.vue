@@ -2,22 +2,53 @@
   <br />
   <section>
     <div class="container-lg">
-      <div>
-        <p class="m-0 p-0 fs-3 fst-normal mb-3">{{ nameCategory?.name }}</p>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row row-cols-1 row-cols-md-5 cateName">
+            <span class="p-0 fs-3 fst-normal cateName">
+              {{ nameCategory?.name }}
+            </span>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center m-0 p-0">
+          <div style="font-size: 18px">
+            <span>
+              Có <strong>{{ products.total_count }}</strong> kết quả
+            </span>
+            <span v-if="search">
+              tìm kiếm <strong>{{ search }}</strong>
+            </span>
+          </div>
+
+          <select
+            id="sortOptions"
+            aria-label="Sort options"
+            class="form-select"
+            style="width: 200px"
+          >
+            <option value="default">Sắp xếp giá mặc định</option>
+            <option value="low-to-high">Giá từ thấp đến cao</option>
+            <option value="high-to-low">Giá từ cao đến thấp</option>
+          </select>
+        </div>
+
+        <hr style="width: 100%; border: 2px solid #e2e2e2; margin: 10px 0" />
       </div>
+
       <div class="row">
         <div class="col-md-12">
           <div class="row row-cols-1 row-cols-md-5">
             <!-- cart product -->
             <div
-              v-for="product in products"
+              v-for="product in products.items"
               :key="product.id"
               class="col border border-1"
               style="overflow: hidden"
             >
               <div class="product-item">
                 <figure class="figure-wrapper mb-0">
-                  <a href="index.html" title="Product Title">
+                  <a href="#" title="Product Title">
                     <img
                       :src="product.imageUrl"
                       alt="Product Thumbnail"
@@ -41,7 +72,8 @@
                         product.id,
                         product.name,
                         product.imageUrl
-                      )
+                      );
+                      addLocalStore(product);
                     "
                   >
                     <button
@@ -104,7 +136,7 @@
           page
         }}</a>
       </li>
-      <li class="page-item" :class="{ disabled: products.length == 0 }">
+      <li class="page-item" :class="{ disabled: products.items == 0 }">
         <a
           class="page-link"
           href="#"
@@ -132,6 +164,7 @@ export default {
     };
   },
   mounted() {
+    this.search = this.$route.query.search || ""; // Lấy search từ query và gán vào property khi duoc moute lan dau
     this.fetchProducts();
     this.fetchNameCategory();
   },
@@ -164,6 +197,11 @@ export default {
     search() {
       this.fetchProducts(); // Gọi lại API khi id thay đổi
     },
+    "$route.query.search"(newSearch) {
+      // truong hop nay khi moute truoc do roi
+      this.search = newSearch || ""; // Gán giá trị search từ query vào search trong component
+      this.fetchProducts(); // Gọi lại API với search mới
+    },
   },
   methods: {
     async fetchProducts() {
@@ -193,6 +231,29 @@ export default {
         params: { id },
         query: { name, imgUrl },
       });
+    },
+    addLocalStore(product) {
+      // Lấy danh sách sản phẩm hiện tại từ localStorage (hoặc khởi tạo mảng rỗng nếu chưa có)
+      let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+      // Tìm vị trí của sản phẩm trong danh sách (nếu đã tồn tại)
+      const existingIndex = items.findIndex((item) => item.id === product.id);
+
+      // Nếu sản phẩm đã tồn tại, xóa nó khỏi vị trí cũ
+      if (existingIndex !== -1) {
+        items.splice(existingIndex, 1);
+      }
+
+      // Thêm sản phẩm mới hoặc vừa truy cập lên đầu danh sách
+      items.unshift(product);
+
+      // Giới hạn danh sách chỉ chứa tối đa 10 sản phẩm
+      if (items.length > 5) {
+        items = items.slice(0, 5); // Lấy 10 sản phẩm đầu tiên (những sản phẩm mới nhất)
+      }
+
+      // Lưu danh sách đã cập nhật vào localStorage
+      localStorage.setItem("items", JSON.stringify(items));
     },
   },
 };
@@ -243,5 +304,9 @@ export default {
 }
 .nav-link:hover {
   color: red !important;
+}
+.cateName {
+  color: #287cc4;
+  font-weight: 700;
 }
 </style>

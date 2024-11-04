@@ -24,7 +24,7 @@ export default {
       // Lấy tên route hiện tại
       const currentRouteName = this.$route.name;
       // Danh sách tên route thuộc thư mục user
-      const userRoutes = ["home","productprice","product"]; // Thêm các route khác nếu cần
+      const userRoutes = ["home", "productprice", "product"]; // Thêm các route khác nếu cần
       return userRoutes.includes(currentRouteName);
     },
   },

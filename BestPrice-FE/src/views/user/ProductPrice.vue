@@ -34,7 +34,9 @@
         </aside>
         <main class="col-lg-8">
           <div class="ps-lg-3">
-            <h3 class="title text-dark text-capitalize">{{ productName }} <br /></h3>
+            <h3 class="title text-dark text-capitalize">
+              {{ productName }} <br />
+            </h3>
             <div class="priceitem text-start mt-1">
               <span class="text-danger my-3 fw-bolder">Giá từ 1.500.000 đ</span>
             </div>
@@ -84,18 +86,21 @@
                         style="height: 70px"
                       >
                         <img
-                          src="https://img.websosanh.vn/v2/users/logo/images/d7mjdbu18141f.jpg?compress=85"
+                          :src="productPrice.urlLogo"
                           alt="BVT Mobile Logo"
                           style="
-                            height: 40px;
-                            width: 110px;
+                            height: 55px;
+                            width: 127px;
                             object-fit: contain;
                           "
                         />
                       </div>
 
                       <span class="card-title text-danger fw-bolder mb-3 fs-5"
-                        >{{productPrice.price.toLocaleString('vi-VN')}} đ</span
+                        >{{
+                          productPrice.price.toLocaleString("vi-VN")
+                        }}
+                        đ</span
                       >
 
                       <div class="mb-3">
