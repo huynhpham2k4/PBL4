@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Web_API_PBL.Models;
+using Web_API_PBL.Models.ViewModels;
 
 namespace Web_API_PBL.Controllers
 {
@@ -24,61 +26,95 @@ namespace Web_API_PBL.Controllers
 
 		// GET: api/Product
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+		public async Task<ActionResult<IEnumerable<object>>> GetProducts()
 		{
 			if (_context.Products == null)
 			{
 				return NotFound();
 			}
-			return await _context.Products.ToListAsync();
+
+			// Dùng LINQ để chuyển đổi từ Product sang ProductViewModel
+			var products = await _context.Products
+				.Select(p => new
+				{
+					id = p.Id,
+					name = p.Name,
+					image_url = p.ImageUrl,
+					category_id = p.CategoryId, // Giả sử bạn có thuộc tính này trong Product (nếu cần)
+				})
+				.ToListAsync();
+
+			return products;
 		}
 
+
+
+
 		[HttpGet("category")]
-		public async Task<PagedResult<Product>> GetProductByCategoryId(int categoryId = 0, string? search = null, int pageNumber = 1)
+		public async Task<ActionResult<object>> GetProductByCategoryId(int categoryId = 0, string? search = null, int pageNumber = 1)
 		{
 			if (_context.Products == null)
 			{
-				return new PagedResult<Product> { items = Enumerable.Empty<Product>(), total_count = 0 };
+				return new { items = Enumerable.Empty<ProductViewModel>(), total_count = 0 };
 			}
 
 			IQueryable<Product> query = _context.Products;
 
-			// Filter by categoryId
+			// Lọc theo categoryId
 			if (categoryId > 0)
 			{
 				query = query.Where(p => p.CategoryId == categoryId);
 			}
 
-			// Filter by search term
+			// Lọc theo từ khóa tìm kiếm
 			if (!string.IsNullOrEmpty(search))
 			{
 				query = query.Where(p => p.Name.Contains(search));
 			}
 
-			// Get total count before pagination
+			// Lấy tổng số sản phẩm trước khi phân trang
 			int totalCount = await query.CountAsync();
 
-			// Apply pagination
+			// Phân trang
 			var products = await query
 				.Skip((pageNumber - 1) * PAGE_SIZE)
 				.Take(PAGE_SIZE)
 				.ToListAsync();
 
-			// Return paginated list and total count
-			return new PagedResult<Product>
+			// Chuyển đổi từ Product sang ProductViewModel và bổ sung thuộc tính priceFrom
+			var productViewModels = products.Select(p => new
 			{
-				items = products,
-				total_count = totalCount
-			};
+				id = p.Id,
+				name = p.Name,
+				image_url = p.ImageUrl,
+				category_id = p.CategoryId,
+				price_from = GetProductPriceFrom(p)  // Giả sử bạn có phương thức để lấy giá từ
+			}).ToList();
 
-
+			// Trả về kết quả
+			return new { items = productViewModels, total_count = totalCount };
 		}
+
+
+		// Giả sử bạn có một phương thức để lấy giá thấp nhất cho mỗi sản phẩm
+		private decimal GetProductPriceFrom(Product product)
+		{
+			// Bạn có thể truy vấn giá của sản phẩm từ bảng giá hoặc các nguồn khác
+			// Ví dụ, giả sử mỗi sản phẩm có một bảng Prices liên kết:
+			var priceFrom = _context.ProductPrices
+				.Where(p => p.ProductId == product.Id)
+				.OrderBy(p => p.Price)  // Lấy mức giá thấp nhất
+				.FirstOrDefault();
+
+			return priceFrom?.Price ?? 0;  // Nếu không có giá, trả về 0
+		}
+
 
 
 
 		// GET: api/product/5
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Product>> GetProduct(int id)
+		public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
 		{
 			if (_context.Products == null)
 			{
@@ -86,58 +122,78 @@ namespace Web_API_PBL.Controllers
 			}
 			var product = await _context.Products.FindAsync(id);
 
+
 			if (product == null)
 			{
 				return NotFound();
 			}
 
-			return product;
+			var productViewModel = new ProductViewModel
+			{
+				name = product.Name,
+				image_url = product.ImageUrl,
+				category_id = product.CategoryId,
+			};
+
+			return Ok(productViewModel);
 		}
 
 		// PUT: api/Product/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutProduct(int id, Product product)
+		public async Task<IActionResult> PutProduct(int id, ProductViewModel productViewModel)
 		{
-			if (id != product.Id)
+			// Kiểm tra nếu ID trong request không khớp với ID được truyền vào
+			if (id <= 0 || productViewModel == null)
 			{
-				return BadRequest();
+				return BadRequest("Invalid product data.");
 			}
 
-			_context.Entry(product).State = EntityState.Modified;
-
-			try
+			// Tìm sản phẩm trong cơ sở dữ liệu
+			var product = await _context.Products.FindAsync(id);
+			if (product == null)
 			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!ProductExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
+				return NotFound("Product not found.");
 			}
 
+			// Cập nhật các thuộc tính của sản phẩm
+			product.Name = productViewModel.name;
+			product.ImageUrl = productViewModel.image_url;
+			product.CategoryId = productViewModel.category_id;
+
+			// Lưu thay đổi vào cơ sở dữ liệu
+			await _context.SaveChangesAsync();
 			return NoContent();
 		}
+
+
+
 
 		// POST: api/Product
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<Product>> PostProduct(Product product)
+		public async Task<ActionResult<Product>> PostProduct(ProductViewModel productViewModel)
 		{
+			// Kiểm tra nếu 'Products' là null
 			if (_context.Products == null)
 			{
-				return Problem("Entity set 'DataContext.Products'  is null.");
+				return Problem("Entity set 'DataContext.Products' is null.");
 			}
+
+			// Tạo đối tượng Product từ ProductViewModel
+			var product = new Product
+			{
+				Name = productViewModel.name,
+				ImageUrl = productViewModel.image_url,
+				CategoryId = productViewModel.category_id
+			};
+
+			// Thêm sản phẩm vào DbContext và lưu vào cơ sở dữ liệu
 			_context.Products.Add(product);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+			// Trả về phản hồi 201 Created với URL của sản phẩm mới và thông tin của sản phẩm
+			return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productViewModel);
 		}
 
 		// DELETE: api/Product/5

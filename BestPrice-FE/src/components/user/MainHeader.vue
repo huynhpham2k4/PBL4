@@ -28,21 +28,192 @@
         </div>
 
         <div class="">
-          <a
-            class="btn-login d-flex align-items-center fs-6"
-            href="/admin"
-            style="font-size: 14px"
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#loginModal"
           >
             Đăng nhập
-            <i class="fa-solid fa-user ms-2"></i>
-          </a>
+          </button>
         </div>
       </div>
     </div>
   </header>
   <!-- header -->
 
-  <!-- navbar view -->
+  <!-- Modal chứa form -->
+  <div
+    class="modal fade"
+    id="loginModal"
+    tabindex="-1"
+    aria-labelledby="loginModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <!-- Tăng kích thước modal -->
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color: #287cc4">
+          <!-- Header nổi bật -->
+          <h5 class="modal-title" id="loginModalLabel">Đăng nhập / Đăng ký</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Navigation Tabs -->
+          <ul
+            class="nav nav-pills mb-4 justify-content-center"
+            id="pills-tab"
+            role="tablist"
+          >
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="tab-login"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-login"
+                type="button"
+                role="tab"
+                aria-controls="pills-login"
+                aria-selected="true"
+              >
+                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="tab-register"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-register"
+                type="button"
+                role="tab"
+                aria-controls="pills-register"
+                aria-selected="false"
+              >
+                <i class="bi bi-person-plus"></i> Đăng ký
+              </button>
+            </li>
+          </ul>
+
+          <!-- Content -->
+          <div class="tab-content" id="pills-tabContent">
+            <!-- Login form -->
+            <div
+              class="tab-pane fade show active"
+              id="pills-login"
+              role="tabpanel"
+              aria-labelledby="tab-login"
+            >
+              <form>
+                <!-- Email input -->
+                <div class="form-outline mb-3">
+                  <label class="form-label" for="loginEmail"
+                    ><i class="bi bi-envelope"></i>Email</label
+                  >
+                  <input
+                    type="email"
+                    id="loginEmail"
+                    class="form-control"
+                    placeholder="Nhập email của bạn"
+                  />
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-3">
+                  <label class="form-label" for="loginPassword"
+                    ><i class="bi bi-lock"></i> Mật khẩu</label
+                  >
+                  <input
+                    type="password"
+                    id="loginPassword"
+                    class="form-control"
+                    placeholder="Nhập mật khẩu của bạn"
+                  />
+                </div>
+
+                <!-- Checkbox -->
+                <div class="form-check mb-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="loginRememberMe"
+                  />
+                  <label class="form-check-label" for="loginRememberMe">
+                    Ghi nhớ tài khoản
+                  </label>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                </button>
+              </form>
+            </div>
+
+            <!-- Register form -->
+            <div
+              class="tab-pane fade"
+              id="pills-register"
+              role="tabpanel"
+              aria-labelledby="tab-register"
+            >
+              <form>
+                <!-- Name input -->
+                <div class="form-outline mb-3">
+                  <label class="form-label" for="registerName"
+                    ><i class="bi bi-person"></i> Họ và Tên</label
+                  >
+                  <input
+                    type="text"
+                    id="registerName"
+                    class="form-control"
+                    placeholder="Nhập họ và tên của bạn"
+                  />
+                </div>
+
+                <!-- Email input -->
+                <div class="form-outline mb-3">
+                  <label class="form-label" for="registerEmail"
+                    ><i class="bi bi-envelope"></i> Email</label
+                  >
+                  <input
+                    type="email"
+                    id="registerEmail"
+                    class="form-control"
+                    placeholder="Nhập email của bạn"
+                  />
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-3">
+                  <label class="form-label" for="registerPassword"
+                    ><i class="bi bi-lock"></i> Mật khẩu</label
+                  >
+                  <input
+                    type="password"
+                    id="registerPassword"
+                    class="form-control"
+                    placeholder="Tạo mật khẩu"
+                  />
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-success w-100">
+                  <i class="bi bi-person-plus"></i> Đăng ký
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div
     class="container-fluid bg-light border-bottom d-flex flex-wrap justify-content-center align-items-center container-nav"
   >

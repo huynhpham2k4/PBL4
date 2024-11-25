@@ -50,7 +50,7 @@
                 <figure class="figure-wrapper mb-0">
                   <a href="#" title="Product Title">
                     <img
-                      :src="product.imageUrl"
+                      :src="product.image_url"
                       alt="Product Thumbnail"
                       class="tab-image img-fluid"
                       style="height: 200px; width: 200px; object-fit: fill"
@@ -71,7 +71,8 @@
                       viewProductPrice(
                         product.id,
                         product.name,
-                        product.imageUrl
+                        product.image_url,
+                        product.price_from
                       );
                       addLocalStore(product);
                     "
@@ -98,7 +99,10 @@
                   <div
                     class="priceitem text-start mt-1 d-flex justify-content-center"
                   >
-                    <span class="text-danger my-0">Giá từ 17.500.000 đ</span>
+                    <span class="text-danger my-0"
+                      >Giá từ
+                      {{ product.price_from.toLocaleString("vi-VN") }} đ</span
+                    >
                   </div>
                 </div>
               </div>
@@ -224,12 +228,12 @@ export default {
       this.nameCategory = data;
     },
 
-    viewProductPrice(id, name, imgUrl) {
+    viewProductPrice(id, name, imgUrl, price_from) {
       // console.log("huynhphamngoc");
       this.$router.push({
         name: "productprice",
         params: { id },
-        query: { name, imgUrl },
+        query: { name, imgUrl, price_from },
       });
     },
     addLocalStore(product) {

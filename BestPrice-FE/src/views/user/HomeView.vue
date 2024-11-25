@@ -23,7 +23,7 @@
                 <figure class="figure-wrapper mb-0">
                   <a href="index.html" title="Product Title">
                     <img
-                      :src="product.imageUrl"
+                      :src="product.image_url"
                       alt="Product Thumbnail"
                       class="tab-image img-fluid"
                       style="height: 200px; width: 200px; object-fit: fill"
@@ -44,8 +44,10 @@
                       viewProductPrice(
                         product.id,
                         product.name,
-                        product.imageUrl
-                      )
+                        product.image_url,
+                        product.price_from
+                      );
+                      addLocalStore(product);
                     "
                   >
                     <button
@@ -70,7 +72,10 @@
                   <div
                     class="priceitem text-start mt-1 d-flex justify-content-center"
                   >
-                    <span class="text-danger my-0">Giá từ 17.500.000 đ</span>
+                    <span class="text-danger my-0"
+                      >Giá từ
+                      {{ product.price_from.toLocaleString("vi-VN") }} đ</span
+                    >
                   </div>
                 </div>
               </div>
@@ -131,26 +136,32 @@
           <div class="row row-cols-1 row-cols-md-5">
             <!-- Category Items -->
             <div class="category-item">
-              <a href="">
-                <img
+              <router-link
+                class="nav-link link-dark px-2 mx-3 fs-6"
+                style="color: white"
+                aria-current="page"
+                :to="{ name: 'product', params: { id: 1 } }"
+                ><img
                   src="https://asset.websosanh.vn/dist/23a87860d12ab078ca3f.png"
                   alt="Fruits & Veges"
                 />
-              </a>
-              <div class="category-name fs-6">Điện thoại</div>
+                <p class="category-name fs-6">Điện thoại</p>
+              </router-link>
             </div>
-
-            <!-- Category Items -->
             <div class="category-item">
-              <a href="">
-                <img
+              <router-link
+                class="nav-link link-dark px-2 mx-3 fs-6"
+                style="color: white"
+                aria-current="page"
+                :to="{ name: 'product', params: { id: 2 } }"
+                ><img
                   src="https://asset.websosanh.vn/dist/49f0b34bf25477cc5b26.png"
                   alt="Fruits & Veges"
                 />
-              </a>
-              <div class="category-name fs-6">Laptop</div>
+                <p class="category-name fs-6">Laptop</p>
+              </router-link>
             </div>
-            <!-- Category Items -->
+
             <!-- Category Items -->
           </div>
           <!-- / product-grid -->
@@ -179,7 +190,7 @@
                 <figure class="figure-wrapper mb-0">
                   <a href="index.html" title="Product Title">
                     <img
-                      :src="product.imageUrl"
+                      :src="product.image_url"
                       alt="Product Thumbnail"
                       class="tab-image img-fluid"
                       style="height: 200px; width: 200px; object-fit: fill"
@@ -200,8 +211,10 @@
                       viewProductPrice(
                         product.id,
                         product.name,
-                        product.imageUrl
-                      )
+                        product.image_url,
+                        product.price_from
+                      );
+                      addLocalStore(product);
                     "
                   >
                     <button
@@ -226,7 +239,8 @@
                   <div
                     class="priceitem text-start mt-1 d-flex justify-content-center"
                   >
-                    <span class="text-danger my-0">Giá từ 17.500.000 đ</span>
+                    <span class="text-danger my-0">Giá từ
+                      {{ product.price_from.toLocaleString("vi-VN") }} đ</span>
                   </div>
                 </div>
               </div>
@@ -299,13 +313,36 @@ export default {
       this.fetchProducts();
     },
 
-    viewProductPrice(id, name, imgUrl) {
+    viewProductPrice(id, name, imgUrl, price_from) {
       // console.log("huynhphamngoc");
       this.$router.push({
         name: "productprice",
         params: { id },
-        query: { name, imgUrl },
+        query: { name, imgUrl, price_from },
       });
+    },
+    addLocalStore(product) {
+      // Lấy danh sách sản phẩm hiện tại từ localStorage (hoặc khởi tạo mảng rỗng nếu chưa có)
+      let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+      // Tìm vị trí của sản phẩm trong danh sách (nếu đã tồn tại)
+      const existingIndex = items.findIndex((item) => item.id === product.id);
+
+      // Nếu sản phẩm đã tồn tại, xóa nó khỏi vị trí cũ
+      if (existingIndex !== -1) {
+        items.splice(existingIndex, 1);
+      }
+
+      // Thêm sản phẩm mới hoặc vừa truy cập lên đầu danh sách
+      items.unshift(product);
+
+      // Giới hạn danh sách chỉ chứa tối đa 10 sản phẩm
+      if (items.length > 5) {
+        items = items.slice(0, 5); // Lấy 10 sản phẩm đầu tiên (những sản phẩm mới nhất)
+      }
+
+      // Lưu danh sách đã cập nhật vào localStorage
+      localStorage.setItem("items", JSON.stringify(items));
     },
   },
 };
