@@ -13,6 +13,5 @@ namespace Web_API_PBL.Models
 		public DbSet<Product> Products { get; set; }
 
 		public DbSet<CrawlData> CrawlDatas { get; set; }
-		public object Categories { get; internal set; }
 	}
 }
