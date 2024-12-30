@@ -22,14 +22,15 @@
           </div>
 
           <select
+            @change="sortProducts"
             id="sortOptions"
             aria-label="Sort options"
             class="form-select"
             style="width: 200px"
           >
             <option value="default">Sắp xếp giá mặc định</option>
-            <option value="low-to-high">Giá từ thấp đến cao</option>
-            <option value="high-to-low">Giá từ cao đến thấp</option>
+            <option value="asc">Giá tăng dần</option>
+            <option value="desc">Giá giảm dần</option>
           </select>
         </div>
 
@@ -81,7 +82,7 @@
                       class="btn btn-danger rounded-pill text-center align-items-center d-flex"
                       style="height: 26px; font-size: 14px"
                     >
-                      Tới nơi bán
+                      So sánh giá
                     </button>
                   </router-link>
                 </div>
@@ -214,6 +215,13 @@ export default {
       );
       const data = await response.json();
       this.products = data;
+    },
+    sortProducts() {
+      if (document.getElementById("sortOptions").value === "asc") {
+        this.products.items.sort((a, b) => a.price_from - b.price_from);
+      } else if (document.getElementById("sortOptions").value === "desc") {
+        this.products.items.sort((a, b) => b.price_from - a.price_from);
+      }
     },
     changePage(page) {
       this.pageNumber = page;

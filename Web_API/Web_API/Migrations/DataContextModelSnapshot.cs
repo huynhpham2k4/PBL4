@@ -9,177 +9,302 @@ using Web_API_PBL.Models;
 
 namespace Web_API_PBL.Migrations
 {
-	[DbContext(typeof(DataContext))]
-	partial class DataContextModelSnapshot : ModelSnapshot
-	{
-		protected override void BuildModel(ModelBuilder modelBuilder)
-		{
+    [DbContext(typeof(DataContext))]
+    partial class DataContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
 #pragma warning disable 612, 618
-			modelBuilder
-				.HasAnnotation("ProductVersion", "7.0.5")
-				.HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder
+                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-			SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-			modelBuilder.Entity("Web_API_PBL.Models.Category", b =>
-				{
-					b.Property<int>("Id")
-						.ValueGeneratedOnAdd()
-						.HasColumnType("int")
-						.HasColumnName("id");
+            modelBuilder.Entity("Web_API_PBL.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-					b.Property<string>("Name")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
 
-					b.HasKey("Id");
+                    b.HasKey("Id");
 
-					b.ToTable("Categories");
-				});
+                    b.ToTable("Categories");
+                });
 
-			modelBuilder.Entity("Web_API_PBL.Models.Product", b =>
-				{
-					b.Property<int>("Id")
-						.ValueGeneratedOnAdd()
-						.HasColumnType("int")
-						.HasColumnName("id");
+            modelBuilder.Entity("Web_API_PBL.Models.CrawlData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-					b.Property<int>("CategoryId")
-						.HasColumnType("int")
-						.HasColumnName("category_id");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("Category_id");
 
-					b.Property<string>("ImageUrl")
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("image_url");
+                    b.Property<string>("ImageSelector")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("image_selector");
 
-					b.Property<string>("Name")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("name");
+                    b.Property<string>("LinkSelector")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("link_selector");
 
-					b.HasKey("Id");
+                    b.Property<string>("NameSelector")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name_selector");
 
-					b.HasIndex("CategoryId");
+                    b.Property<string>("PriceSelector")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("price_selector");
 
-					b.ToTable("Products");
-				});
+                    b.Property<string>("SiteName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("site_name");
 
-			modelBuilder.Entity("Web_API_PBL.Models.ProductPrice", b =>
-				{
-					b.Property<int>("Id")
-						.ValueGeneratedOnAdd()
-						.HasColumnType("int")
-						.HasColumnName("id");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("url");
 
-					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.HasKey("Id");
 
-					b.Property<decimal>("Price")
-						.HasColumnType("decimal(10, 2)")
-						.HasColumnName("price");
+                    b.ToTable("CrawlData");
+                });
 
-					b.Property<int>("ProductId")
-						.HasColumnType("int")
-						.HasColumnName("product_id");
+            modelBuilder.Entity("Web_API_PBL.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-					b.Property<string>("Url")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("url");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-					b.Property<int>("WebsiteId")
-						.HasColumnType("int")
-						.HasColumnName("website_id");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
 
-					b.HasKey("Id");
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("image_url");
 
-					b.HasIndex("ProductId");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
 
-					b.HasIndex("WebsiteId");
+                    b.HasKey("Id");
 
-					b.ToTable("ProductPrices");
-				});
+                    b.HasIndex("CategoryId");
 
-			modelBuilder.Entity("Web_API_PBL.Models.Website", b =>
-				{
-					b.Property<int>("Id")
-						.ValueGeneratedOnAdd()
-						.HasColumnType("int")
-						.HasColumnName("id");
+                    b.ToTable("Products");
+                });
 
-					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+            modelBuilder.Entity("Web_API_PBL.Models.ProductPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-					b.Property<string>("Name")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("name");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-					b.Property<string>("Url")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("url");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10, 2)")
+                        .HasColumnName("price");
 
-					b.Property<string>("UrlLogo")
-						.IsRequired()
-						.HasMaxLength(255)
-						.HasColumnType("nvarchar(255)")
-						.HasColumnName("url_logo");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
 
-					b.HasKey("Id");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("url");
 
-					b.ToTable("Websites");
-				});
+                    b.Property<int>("WebsiteId")
+                        .HasColumnType("int")
+                        .HasColumnName("website_id");
 
-			modelBuilder.Entity("Web_API_PBL.Models.Product", b =>
-				{
-					b.HasOne("Web_API_PBL.Models.Category", "Category")
-						.WithMany("Products")
-						.HasForeignKey("CategoryId")
-						.OnDelete(DeleteBehavior.Cascade)
-						.IsRequired();
+                    b.HasKey("Id");
 
-					b.Navigation("Category");
-				});
+                    b.HasIndex("ProductId");
 
-			modelBuilder.Entity("Web_API_PBL.Models.ProductPrice", b =>
-				{
-					b.HasOne("Web_API_PBL.Models.Product", "Product")
-						.WithMany()
-						.HasForeignKey("ProductId")
-						.OnDelete(DeleteBehavior.Cascade)
-						.IsRequired();
+                    b.HasIndex("WebsiteId");
 
-					b.HasOne("Web_API_PBL.Models.Website", "Website")
-						.WithMany("ProductPrices")
-						.HasForeignKey("WebsiteId")
-						.OnDelete(DeleteBehavior.Cascade)
-						.IsRequired();
+                    b.ToTable("ProductPrices");
+                });
 
-					b.Navigation("Product");
+            modelBuilder.Entity("Web_API_PBL.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-					b.Navigation("Website");
-				});
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-			modelBuilder.Entity("Web_API_PBL.Models.Category", b =>
-				{
-					b.Navigation("Products");
-				});
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-			modelBuilder.Entity("Web_API_PBL.Models.Website", b =>
-				{
-					b.Navigation("ProductPrices");
-				});
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.Website", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("url");
+
+                    b.Property<string>("UrlLogo")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("url_logo");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Websites");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.Product", b =>
+                {
+                    b.HasOne("Web_API_PBL.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.ProductPrice", b =>
+                {
+                    b.HasOne("Web_API_PBL.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Web_API_PBL.Models.Website", "Website")
+                        .WithMany("ProductPrices")
+                        .HasForeignKey("WebsiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Website");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.User", b =>
+                {
+                    b.HasOne("Web_API_PBL.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.Role", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Web_API_PBL.Models.Website", b =>
+                {
+                    b.Navigation("ProductPrices");
+                });
 #pragma warning restore 612, 618
-		}
-	}
+        }
+    }
 }

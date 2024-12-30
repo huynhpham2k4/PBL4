@@ -54,7 +54,7 @@
                       class="btn btn-danger rounded-pill text-center align-items-center d-flex"
                       style="height: 26px; font-size: 14px"
                     >
-                      Tới nơi bán
+                      So sánh giá
                     </button>
                   </router-link>
                 </div>
